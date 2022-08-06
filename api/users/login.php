@@ -2,17 +2,20 @@
   // Headers
   header('Access-Control-Allow-Origin: *');
   header('Content-Type: application/json');
-  header('Access-Control-Allow-Methods: POST, OPTIONS');
+  header('Access-Control-Allow-Methods: POST');
+  header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,Access-Control-Allow-Methods, Authorization, X-Requested-With');
 
-  if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+  // Main issue was not adding options to the allowed methods since it was 
+// always used by CORS preflight requests (this request is automatically 
+// issued by a browser ). 
 
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");         
+// It checks for example, whether the request methods and headers are accepted 
+// by the server. Therefore you need to have a different flow for options
+// requests in your php server scripts
 
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-
-    exit(0);
+// For more info check: https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+  exit(0);
 }
 
   include_once '../../config/Database.php';
